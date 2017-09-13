@@ -5,7 +5,9 @@ var player;
 var facing = 'front';
 var cursors;
 var map;
-var mapLayers = {}; 
+var mapLayers = {};
+var bombButton;
+var bombTimer;
 PlayState.prototype = {
     preload: function () {
         // Tu ładujemy assety
@@ -37,24 +39,25 @@ PlayState.prototype = {
 
         game.physics.enable(player, Phaser.Physics.ARCADE);
         game.camera.follow(player);
-        
-        player.body.setSize(48,48,10,60);
+
+        player.body.setSize(48, 48, 10, 60);
+
+        bombButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    },
+    createMap: function () {
+        map = game.add.tilemap('map', null, 64, 64);
+
+        console.log(map.addTilesetImage('tiles', null, 64, 64));
+
+        mapLayers.grass = map.createLayer('grass');
+        mapLayers.collide = map.createLayer('collide');
+
+        mapLayers.grass.resizeWorld();
+        mapLayers.collide.debug = true;
+
+        map.setCollisionBetween(0, 2, true, mapLayers.collide);
 
     },
-    createMap: function() {
-            map = game.add.tilemap('map',null,64,64);
-           
-           console.log(map.addTilesetImage('tiles',null,64,64));
-           
-        	mapLayers.grass =  map.createLayer('grass');
-            mapLayers.collide =  map.createLayer('collide');
-    
-           mapLayers.grass.resizeWorld();
-      mapLayers.collide.debug = true;
-    
-           map.setCollisionBetween(0,2, true, mapLayers.collide);
-            
-    },   
     update: function () {
         game.physics.arcade.collide(player, mapLayers.collide);
         player.body.velocity.x = 0;
@@ -97,16 +100,21 @@ PlayState.prototype = {
             }
             facing = 'idle';
         }
+
+        if (bombButton.isDown && game.time.now > bombTimer) {
+            console.log("BOMBA");
+            bombTimer = game.time.now + 750;
+        }
     },
     render: function () {
         game.debug.spriteBounds(player);
         /*
                 console.log(bot.y);
                 */
-                game.debug.text('Body X ' + player.body.width, 32, 88);
-                game.debug.text('Body Y ' + player.body.height, 32, 108);
-                game.debug.text('Anchor X ' + player.anchor.x, 32, 128);
-                game.debug.text('Anchor Y ' + player.anchor.y, 32, 148);
+        game.debug.text('Body X ' + player.body.width, 32, 88);
+        game.debug.text('Body Y ' + player.body.height, 32, 108);
+        game.debug.text('Anchor X ' + player.anchor.x, 32, 128);
+        game.debug.text('Anchor Y ' + player.anchor.y, 32, 148);
 
     }
 }
