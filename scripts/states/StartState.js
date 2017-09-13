@@ -13,9 +13,9 @@ PlayState.prototype = {
 
         // game.load.atlasXML('bman', 'assets/Bomberman/bman.png', 'assets/Bomberman/bman.xml');
         game.load.atlas('bman', 'assets/Bomberman/bman.png', 'assets/Bomberman/bman.json');
-        game.load.image('tiles', 'assets/Map/tileMap.png');
-        game.load.tilemap('map', 'assets/Map/map.json', null, Phaser.Tilemap.TILED_JSON);
 
+        game.load.tilemap('map', 'assets/Map/map.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.image('tiles', 'assets/Map/tileMapBO.png');
     },
     create: function () {
         //  This sprite is using a texture atlas for all of its animation data
@@ -34,28 +34,29 @@ PlayState.prototype = {
 
         player.animations.add('left', Phaser.Animation.generateFrameNames('Bman_S_f', 0, 7, '', 2), 30, true);
         player.anchor.x = 0.5;
-        
+
         game.physics.enable(player, Phaser.Physics.ARCADE);
         game.camera.follow(player);
+        
+        player.body.setSize(64,64,0,0);
 
     },
     createMap: function() {
-            map = game.add.tilemap('map');
-            map.addTilesetImage('tiles');
+            map = game.add.tilemap('map',null,64,64);
            
-        	mapLayers.grass =  map.createLayer('grass');/*
-            mapLayers.road = map.createLayer('Road');
-            mapLayers.collision = map.createLayer('Collision');*/
+           console.log(map.addTilesetImage('tiles',null,64,64));
+           
+        	mapLayers.grass =  map.createLayer('grass');
+            mapLayers.collide =  map.createLayer('collide');
     
+           mapLayers.grass.resizeWorld();
+      mapLayers.collide.debug = true;
     
-            mapLayers.grass.resizeWorld();
-    //        mapLayers.collision.debug = true;
-    
-         //   map.setCollisionBetween(0,2, true, mapLayers.collision);
+           map.setCollisionBetween(0,2, true, mapLayers.collide);
             
     },   
     update: function () {
-
+        game.physics.arcade.collide(player, mapLayers.collide);
         player.body.velocity.x = 0;
         player.body.velocity.y = 0;
         if (cursors.left.isDown) {
@@ -98,8 +99,10 @@ PlayState.prototype = {
         }
     },
     render: function () {
+        game.debug.spriteBounds(player);
         /*
                 console.log(bot.y);
+                
                 game.debug.text('botHeight ' + bot.height, 32, 148);*/
 
     }
