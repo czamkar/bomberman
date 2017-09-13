@@ -38,7 +38,7 @@ PlayState.prototype = {
         game.physics.enable(player, Phaser.Physics.ARCADE);
         game.camera.follow(player);
         
-        player.body.setSize(64,64,0,0);
+        player.body.setSize(48,48,10,60);
 
     },
     createMap: function() {
@@ -102,8 +102,11 @@ PlayState.prototype = {
         game.debug.spriteBounds(player);
         /*
                 console.log(bot.y);
-                
-                game.debug.text('botHeight ' + bot.height, 32, 148);*/
+                */
+                game.debug.text('Body X ' + player.body.width, 32, 88);
+                game.debug.text('Body Y ' + player.body.height, 32, 108);
+                game.debug.text('Anchor X ' + player.anchor.x, 32, 128);
+                game.debug.text('Anchor Y ' + player.anchor.y, 32, 148);
 
     }
 }
