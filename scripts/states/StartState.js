@@ -8,67 +8,41 @@ var cursors;
 StartState.prototype = {
     preload: function () {
         // Tu ładujemy assety
-        game.load.spritesheet('bot', 'assets/Bomberman/bman.png', 64, 128);
+       // game.load.spritesheet('bot', 'assets/Bomberman/bman.png', 64, 128);
+
+       // game.load.atlasXML('bman', 'assets/Bomberman/bman.png', 'assets/Bomberman/bman.xml');
+        game.load.atlas('bman', 'assets/Bomberman/bman.png', 'assets/Bomberman/bman.json');
 
     },
     create: function () {
         //  This sprite is using a texture atlas for all of its animation data
-        player = game.add.sprite(64, 128, 'bot');
-
-        player.animations.add('left', [0, 1, 2, 3], 10, true);
-        player.animations.add('turn', [12], 1, true);
-        player.animations.add('right', [0, 6, 12, 19, 20, 21, 22], 8, true);
-        player.animations.add('up', [1, 2, 3, 7, 8, 9, 10, 16], 8, true);
-        player.animations.add('down', [0, 4, 5, 11, 14, 15, 16, 17], 8, true);
+   
 
         cursors = game.input.keyboard.createCursorKeys();
+        player  = game.add.sprite(0, 0, 'bman', 'Bman_S_f00');
+        player.animations.add('right', Phaser.Animation.generateFrameNames('Bman_S_f', 0, 7, '', 2), 30, true);
+        player.animations.play('right');
 
-        game.physics.enable(player, Phaser.Physics.ARCADE);
+        player2  = game.add.sprite(400, 0, 'bman', 'Bman_F_f00');
+        player2.animations.add('down', Phaser.Animation.generateFrameNames('Bman_F_f', 0, 7, '', 2), 30, true);
+        player2.animations.play('down');
+        
+        player3  = game.add.sprite(100, 300, 'bman', 'Bman_B_f00');
+        player3.animations.add('up', Phaser.Animation.generateFrameNames('Bman_B_f', 0, 7, '', 2), 30, true);
+        player3.animations.play('up');
+
+        player4  = game.add.sprite(300, 300, 'bman', 'Bman_S_f00');
+        player4.scale.x = -1;
+        player4.animations.add('left', Phaser.Animation.generateFrameNames('Bman_B_f', 0, 7, '', 2), 30, true);
+       // player4.animations.play('left');
+
+
+      game.add.tween(player).to({ x: 300 }, 8000, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
+      game.add.tween(player3).to({ y: 100 }, 8000, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
+      game.add.tween(player2).to({ y: 300 }, 8000, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
     },
     update: function () {
-        player.body.velocity.x = 0;
-        player.body.velocity.y = 0;
-        if (cursors.left.isDown) {
-            player.body.velocity.x = -150;
-
-            if (facing != 'left') {
-                player.animations.play('left');
-                facing = 'left';
-            }
-        } else if (cursors.right.isDown) {
-            player.body.velocity.x = 150;
-
-            if (facing != 'right') {
-                player.animations.play('right');
-                facing = 'right';
-            }
-        }  else if (cursors.up.isDown) {
-            player.body.velocity.y = -150;
-
-            if (facing != 'up') {
-                player.animations.play('up');
-                facing = 'up';
-            }
-        } else if (cursors.down.isDown) {
-            player.body.velocity.y = 150;
-
-            if (facing != 'down') {
-                player.animations.play('down');
-                facing = 'down';
-            }
-        }else {
-            if (facing != 'idle') {
-                player.animations.stop();
-
-                if (facing == 'left') {
-                    player.frame = 0;
-                } else {
-                    player.frame = 5;
-                }
-
-                facing = 'idle';
-            }
-        }
+        
     },
     render: function () {
         /*
