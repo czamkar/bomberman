@@ -6,15 +6,16 @@ var Bomberman = function (x, y, game) {
     this.sprite.animations.add('left', Phaser.Animation.generateFrameNames('Bman_S_f', 0, 7, '', 2), 30, true);
 
     this.cursors = game.input.keyboard.createCursorKeys();
+    this.bombButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
     this.sprite.anchor.x = 0.5;
 
     game.camera.follow(this.sprite);
     game.physics.enable(this.sprite);
 
-
     this.sprite.body.setSize(40, 40, 10, 80);
 }
+var bombTimer = 0;
 Bomberman.prototype.control = function () {
     var facing;
     this.sprite.body.velocity.x = 0;
@@ -53,22 +54,27 @@ Bomberman.prototype.control = function () {
         }
     } else {
 
-        if (facing! = 'idle') {
+        if (facing != 'idle') {
             this.sprite.animations.stop();
         }
         facing = 'idle';
     }
-    /*
-        if (bombButton.isDown && game.time.now > bombTimer) {
+    
+        if (this.bombButton.isDown && game.time.now > bombTimer) {
             console.log("BOMBA");
             bombTimer = game.time.now + 750;
 
-            this.currentTileX = mapLayers['grass'].getTileX(player.body.x);
-            this.currentTileY = mapLayers['grass'].getTileY(player.body.y);
+            this.currentTileX = mapLayers['grass'].getTileX(this.sprite.body.x);
+            this.currentTileY = mapLayers['grass'].getTileY(this.sprite.body.y);
             var abc = map.getTile(this.currentTileX, this.currentTileY)
             console.log(abc);
-            this.bomb = game.add.sprite(abc.worldX + 10, abc.worldY + 10, 'bomb', );
-            game.time.events.add(Phaser.Timer.SECOND * 4, this.fadePicture, this);
+            this.bomb = game.add.sprite(abc.worldX + 10, abc.worldY + 10,'bomb', 'Bomb_f00');
+            this.bomb.sprite.animations.add('explode', Phaser.Animation.generateFrameNames('Bomb_f', 0, 2, '', 2), 30, true);
+            this.bomb.sprite.animations.play('explode');
+            game.time.events.add(Phaser.Timer.SECOND * 4, this.destroyBomb, this);
             console.log(this.currentTileX);
-        }*/
+        }
+}
+Bomberman.prototype.destroyBomb = function(){
+    this.bomb.kill();
 }

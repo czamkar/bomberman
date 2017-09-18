@@ -5,25 +5,20 @@ var facing = 'front';
 var cursors;
 var map;
 var mapLayers = {};
-var bombButton;
-var bombTimer = 0;
+
 PlayState.prototype = {
     preload: function () {
         // Tu ładujemy assety
+        game.load.atlas('bomb', 'assets/Bomb/bombAnimation.png', 'assets/Bomb/bombAnimation.json');
         game.load.atlas('bman', 'assets/Bomberman/bman.png', 'assets/Bomberman/bman.json');
         game.load.tilemap('map', 'assets/Map/map.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('tiles', 'assets/Map/tileMapBO.png');
-        game.load.image('bomb', 'assets/Bomb/Bomb_f01.png');
+   //     game.load.image('bomb', 'assets/Bomb/Bomb_f01.png');
     },
     create: function () {
-        //  This sprite is using a texture atlas for all of its animation data
-
-
         this.createMap();
         this.bomberman = new Bomberman(477, 123, game);
-   
-/*
-        bombButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);*/
+
     },
     createMap: function () {
         map = game.add.tilemap('map', null, 64, 64);
@@ -43,11 +38,8 @@ PlayState.prototype = {
         game.physics.arcade.collide(this.bomberman.sprite, mapLayers.collide);
         this.bomberman.control();
     },
-    fadePicture: function(){
-        this.bomb.kill();
-    },
     render: function () {
-        game.debug.body(this.bomberman.sprite);
+        // game.debug.body(this.bomberman.sprite);
         // /*
         //         console.log(bot.y);
         //         */
