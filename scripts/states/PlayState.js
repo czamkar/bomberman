@@ -11,7 +11,7 @@ var creepPositons = [{
     initVelocityX: 0,
     initVelocityY: 150
 }, {
-    x: 70,
+    x: 85,
     y: 70,
     initVelocityX: 150,
     initVelocityY: 0
@@ -29,9 +29,7 @@ PlayState.prototype = {
         game.load.image('tiles', 'assets/Map/tileMapBO.png');
     },
     create: function () {
-        this.createMap();
-
-        // this.creep1 = new Creep(477, 123, game, 150);
+        this.map = new Map(game);
         this.creeps = game.add.group();
         this.boxs = game.add.group();
         var amount = 0;
@@ -48,6 +46,15 @@ PlayState.prototype = {
         }, {
             x: 1,
             y: 2
+        }, {
+            x: 7,
+            y: 1
+        }, {
+            x: 7,
+            y: 2
+        }, {
+            x: 7,
+            y: 3
         }];
         var serachArraybox = function (x, y) {
             for (var index = 0; index < arrayBox.length; index++) {
@@ -95,28 +102,15 @@ PlayState.prototype = {
             var creep = new Creep(creepPositons[index].x, creepPositons[index].y, game, creepPositons[index].initVelocityY, creepPositons[index].initVelocityX);
             this.creeps.add(creep.sprite);
         }
+
         this.bomberman = new Bomberman(377, 123, game);
-
-    },
-    createMap: function () {
-        map = game.add.tilemap('map', null, 64, 64);
-
-        console.log(map.addTilesetImage('tiles', null, 64, 64));
-
-        mapLayers.grass = map.createLayer('grass');
-        mapLayers.collide = map.createLayer('collide');
-
-        mapLayers.grass.resizeWorld();
-        // mapLayers.collide.debug = true;
-
-        map.setCollisionBetween(0, 2, true, mapLayers.collide);
-
+        this.bombButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     },
     hitWall: function (a, b) {
         a.objectCreep.flip();
     },
     collideCreepBomb: function (a, b) {
-        a.objectCreep.flip();
+        b.objectCreep.flip();
     },
     collideCreepFlame: function (a, b) {
         if (a.objectCreep.alive) {
@@ -134,20 +128,37 @@ PlayState.prototype = {
 
     },
     update: function () {
-        game.physics.arcade.collide(this.bomberman.sprite, mapLayers.collide);
+        game.physics.arcade.collide(this.bomberman.sprite, this.map.mapLayers.collide);
         game.physics.arcade.collide(this.bomberman.sprite, this.boxs);
-
-        game.physics.arcade.collide(this.creeps, this.bomberman.bomb, this.collideCreepBomb);
-        game.physics.arcade.overlap(this.creeps, this.bomberman.flameGroup, this.collideCreepFlame);
-
-        game.physics.arcade.overlap(this.boxs, this.bomberman.flameGroup, this.colideBoxFlame);
-
         game.physics.arcade.overlap(this.bomberman.sprite, this.creeps, this.collideBombermanCreeps);
-        game.physics.arcade.collide(this.creeps, mapLayers.collide, this.hitWall);
+        game.physics.arcade.collide(this.creeps, this.map.mapLayers.collide, this.hitWall);
         game.physics.arcade.collide(this.creeps, this.boxs, this.hitWall);
-        game.physics.arcade.overlap(this.bomberman.sprite, this.bomberman.flameGroup, this.collideBombermanCreeps, null, this);
+
+
         this.bomberman.control();
 
+        if (this.bomb) {
+            game.physics.arcade.overlap(this.bomberman.sprite, this.bomb.flameGroup, this.collideBombermanCreeps, null, this);
+            game.physics.arcade.collide(this.creeps, this.bomb.sprite, this.collideCreepBomb);
+            game.physics.arcade.overlap(this.creeps, this.bomb.flameGroup, this.collideCreepFlame);
+            game.physics.arcade.overlap(this.boxs, this.bomb.flameGroup, this.colideBoxFlame);
+
+            if (this.bombButton.isDown && this.bomb.objectBomb.alive !== true) {
+
+                this.currentTileX = this.map.mapLayers['grass'].getTileX(this.bomberman.sprite.body.x);
+                this.currentTileY = this.map.mapLayers['grass'].getTileY(this.bomberman.sprite.body.y);
+                var tile = this.map.map.getTile(this.currentTileX, this.currentTileY);
+                this.bomb = new Bomb(tile.worldX + 10, tile.worldY + 10, game, this.map);
+            }
+        } else {
+            if (this.bombButton.isDown) {
+
+                this.currentTileX = this.map.mapLayers['grass'].getTileX(this.bomberman.sprite.body.x);
+                this.currentTileY = this.map.mapLayers['grass'].getTileY(this.bomberman.sprite.body.y);
+                var tile = this.map.map.getTile(this.currentTileX, this.currentTileY);
+                this.bomb = new Bomb(tile.worldX + 10, tile.worldY + 10, game, this.map);
+            }
+        }
     },
     colideBoxFlame: function (a, b) {
         a.kill();
@@ -172,20 +183,15 @@ PlayState.prototype = {
         game.paused = true;
     },
     render: function () {
-        this.bomberman.flameGroup.forEachAlive(function (member) {
-            game.debug.body(member);
-        }, this);
-        this.creeps.forEachAlive(function (member) {
-            game.debug.body(member);
-            game.debug.text('Body X ' + member.body.velocity.x, 32, 88);
-            game.debug.text('Body Y ' + member.body.velocity.y, 32, 108);
-        }, this);
+        // if (this.bomb) {
+        //     this.bomb.flameGroup.forEachAlive(function (member) {
+        //         game.debug.body(member);
+        //     }, this);
+        // }
         // game.debug.text('Body X ' + this.creeps[0].body.velocity.x, 32, 88);
         // game.debug.text('Body Y ' + this.creeps[0].body.velocity.y, 32, 108);
 
-        if (game.physics.arcade.overlap(this.bomberman.sprite, this.creeps)) {
-            console.log("tak");
-        }
+ 
         // this.currentTile = map.getTile(mapLayers['collide'].getTileX(this.bomberman.sprite.body.x), mapLayers['collide'].getTileX(this.bomberman.sprite.body.y), 'collide');
         // console.log( this.currentTile);
 

@@ -1,5 +1,5 @@
 var Bomberman = function (x, y, game) {
-    this.flameGroup = game.add.group();
+
     this.sprite = game.add.sprite(x, y, 'bman', 'Bman_F_f00');
     this.sprite.animations.add('right', Phaser.Animation.generateFrameNames('Bman_S_f', 0, 7, '', 2), 30, true);
     this.sprite.animations.add('down', Phaser.Animation.generateFrameNames('Bman_F_f', 0, 7, '', 2), 30, true);
@@ -7,7 +7,6 @@ var Bomberman = function (x, y, game) {
     this.sprite.animations.add('left', Phaser.Animation.generateFrameNames('Bman_S_f', 0, 7, '', 2), 30, true);
 
     this.cursors = game.input.keyboard.createCursorKeys();
-    this.bombButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
     this.sprite.anchor.x = 0.5;
     this.sprite.objectBomberman = this;
@@ -63,7 +62,7 @@ Bomberman.prototype.control = function () {
             }
             facing = 'idle';
         }
-
+/*
         if (this.bombButton.isDown && game.time.now > bombTimer) {
 
             bombTimer = game.time.now + 750;
@@ -79,76 +78,14 @@ Bomberman.prototype.control = function () {
             this.bomb.body.immovable = true;
             game.time.events.add(Phaser.Timer.SECOND * 3, this.destroyBomb, this);
 
-            // var Powyzej2 = map.getTileAbove(0,  this.currentTileX,   this.currentTileY);
-            // console.log("Powyzej2");
-            // console.log(Powyzej2.x + " "+ Powyzej2.y);
-            // this.currentTile = map.getTile(Powyzej2.x , Powyzej2.y , 'collide');
-            // console.log(  this.currentTile);
-        }
+
+        }*/
     }else{
         this.sprite.animations.stop();
     }
 }
 Bomberman.prototype.destroyBomb = function () {
 
-    var flame = game.add.sprite(this.bomb.x, this.bomb.y, 'flame', 'Flame_f00');
-    flame.animations.add('flame', Phaser.Animation.generateFrameNames('Flame_f', 0, 4, '', 2), 4, true);
-    flame.animations.play('flame');
-    this.flameGroup.add(flame);
-    this.currentTileX = mapLayers['grass'].getTileX(this.bomb.x);
-    this.currentTileY = mapLayers['grass'].getTileY(this.bomb.y);
-    var above = map.getTileAbove(0, this.currentTileX, this.currentTileY);
-    var below = map.getTileBelow(0, this.currentTileX, this.currentTileY);
-    var left = map.getTileLeft(0, this.currentTileX, this.currentTileY);
-    var right = map.getTileRight(0, this.currentTileX, this.currentTileY);
-    this.tileAbove = map.getTile(above.x, above.y, 'collide');
-    this.tileBelow = map.getTile(below.x, below.y, 'collide');
-    this.tileLeft = map.getTile(left.x, left.y, 'collide');
-    this.tileRight = map.getTile(right.x, right.y, 'collide');
-    if (this.tileAbove === null) {
 
-        var tile = map.getTile(above.x, above.y);
-        flame = game.add.sprite(tile.worldX + 10, tile.worldY + 10, 'flame', 'Flame_f00');
-        flame.animations.add('flame', Phaser.Animation.generateFrameNames('Flame_f', 0, 4, '', 2), 4, true);
-        flame.animations.play('flame');
-
-        this.flameGroup.add(flame);
-    }
-    if (this.tileBelow == null) {
-
-        var tile = map.getTile(below.x, below.y);
-        flame = game.add.sprite(tile.worldX + 10, tile.worldY + 10, 'flame', 'Flame_f00');
-        flame.animations.add('flame', Phaser.Animation.generateFrameNames('Flame_f', 0, 4, '', 2), 4, true);
-        flame.animations.play('flame');
-
-        this.flameGroup.add(flame);
-    }
-    if (this.tileLeft == null) {
-
-        var tile = map.getTile(left.x, left.y);
-        flame = game.add.sprite(tile.worldX + 10, tile.worldY + 10, 'flame', 'Flame_f00');
-        flame.animations.add('flame', Phaser.Animation.generateFrameNames('Flame_f', 0, 4, '', 2), 4, true);
-        flame.animations.play('flame');
-
-
-        this.flameGroup.add(flame);
-    }
-    if (this.tileRight == null) {
-
-        var tile = map.getTile(right.x, right.y);
-        flame = game.add.sprite(tile.worldX + 10, tile.worldY + 10, 'flame', 'Flame_f00');
-        flame.animations.add('flame', Phaser.Animation.generateFrameNames('Flame_f', 0, 4, '', 2), 4, true);
-        flame.animations.play('flame');
-
-        this.flameGroup.add(flame);
-    }
-
-    game.physics.arcade.enable(this.flameGroup);
-    this.bomb.kill();
-    game.time.events.add(Phaser.Timer.SECOND * 2, function () {
-        this.flameGroup.forEach(function (item) {
-            item.kill();
-        }, this, true);
-    }, this);
 
 }
