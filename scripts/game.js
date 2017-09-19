@@ -1,4 +1,4 @@
-var game = new Phaser.Game(640, 480, Phaser.AUTO, "game");
+var game = new Phaser.Game(960, 640, Phaser.AUTO, "game");
 
 // Definiujemy stany
 game.state.add("Play", PlayState);
