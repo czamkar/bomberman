@@ -102,6 +102,8 @@ PlayState.prototype = {
             var creep = new Creep(creepPositons[index].x, creepPositons[index].y, game, creepPositons[index].initVelocityY, creepPositons[index].initVelocityX);
             this.creeps.add(creep.sprite);
         }
+        this.bombGroup = game.add.group();
+        this.flameG = game.add.group();
 
         this.bomberman = new Bomberman(377, 123, game);
         this.bombButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -114,6 +116,7 @@ PlayState.prototype = {
     },
     collideCreepFlame: function (a, b) {
         if (a.objectCreep.alive) {
+            a.animations.stop();
             a.body.immovable = true;
             a.body.velocity.setTo(0);
             console.log('x')
@@ -138,10 +141,12 @@ PlayState.prototype = {
         this.bomberman.control();
 
         if (this.bomb) {
-            game.physics.arcade.overlap(this.bomberman.sprite, this.bomb.flameGroup, this.collideBombermanCreeps, null, this);
+            game.physics.arcade.overlap(this.bomberman.sprite, this.flameG, this.collideBombermanCreeps, null, this);
+
+            game.physics.arcade.overlap(this.boxs, this.flameG, this.colideBoxFlame);
+
             game.physics.arcade.collide(this.creeps, this.bomb.sprite, this.collideCreepBomb);
-            game.physics.arcade.overlap(this.creeps, this.bomb.flameGroup, this.collideCreepFlame);
-            game.physics.arcade.overlap(this.boxs, this.bomb.flameGroup, this.colideBoxFlame);
+            game.physics.arcade.overlap(this.creeps, this.flameG, this.collideCreepFlame);
 
             if (this.bombButton.isDown && this.bomb.objectBomb.alive !== true) {
 
@@ -149,6 +154,7 @@ PlayState.prototype = {
                 this.currentTileY = this.map.mapLayers['grass'].getTileY(this.bomberman.sprite.body.y);
                 var tile = this.map.map.getTile(this.currentTileX, this.currentTileY);
                 this.bomb = new Bomb(tile.worldX + 10, tile.worldY + 10, game, this.map);
+                this.bombGroup.add(this.bomb.sprite);
             }
         } else {
             if (this.bombButton.isDown) {
@@ -157,10 +163,24 @@ PlayState.prototype = {
                 this.currentTileY = this.map.mapLayers['grass'].getTileY(this.bomberman.sprite.body.y);
                 var tile = this.map.map.getTile(this.currentTileX, this.currentTileY);
                 this.bomb = new Bomb(tile.worldX + 10, tile.worldY + 10, game, this.map);
+                this.bombGroup.add(this.bomb.sprite);
             }
         }
     },
-    colideBoxFlame: function (a, b) {
+    colideBoxFlame: function (a, b) {/*
+        if (a.objectBox.alive) {
+            a.animations.stop();
+            a.body.immovable = true;
+            a.body.velocity.setTo(0);
+            console.log('x')
+            a.objectCreep.alive = false;
+            var tween = game.add.tween(a).to({
+                alpha: 0
+            }, 2000, Phaser.Easing.Linear.None, true);
+            tween.onComplete.add(function () {
+                a.kill();
+            }, this);
+        }*/
         a.kill();
     },
     collideBombermanCreeps: function (a, b) {
