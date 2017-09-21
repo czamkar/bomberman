@@ -57,7 +57,7 @@ Bomb.prototype.destroyBomb = function () {
     music.play();
     this.sprite.kill();
     this.alive = false;
-    game.time.events.add(Phaser.Timer.SECOND * 2, function () {
+    game.time.events.add(Phaser.Timer.SECOND * 1, function () {
         var tween;
         game.state.states.Play.flameG.forEach(function (item) {
 
