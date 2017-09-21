@@ -31,6 +31,25 @@ PlayState.prototype = {
     create: function () {
         this.map = new Map(game);
         this.creeps = game.add.group();
+        this.portals = game.add.group();
+        var x = game.rnd.integerInRange(6, 15);
+        var y = game.rnd.integerInRange(6, 15);
+        
+        if (x % 2 !== 0) {
+   
+                this.portal = game.add.sprite(x*64, y*64, 'blocks', 'Portal');
+                console.log(x,y);
+                game.physics.arcade.enable(this.portal); 
+                this.portals.add( this.portal);
+            
+        } else if (y % 2 !== 0) {
+
+                this.portal = game.add.sprite(x*64, y*64, 'blocks', 'Portal');
+                console.log(x,y);
+                game.physics.arcade.enable(this.portal); 
+                this.portals.add( this.portal);
+            
+        }
         this.boxs = game.add.group();
         var amount = 0;
         var box;
@@ -130,9 +149,21 @@ PlayState.prototype = {
         }
 
     },
+    endGame: function(){
+        
+        var style = { font: "bold 96px Arial", fill: "#ffffff", boundsAlignH: "center", boundsAlignV: "middle" };
+    
+        //  The Text is positioned at 0, 100
+        this.text = game.add.text(game.width/2, game.height/2, "Win !", style);
+        this.text.anchor.setTo(0.5);
+        this.text.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
+        this.text.fixedToCamera = true;
+    },
     update: function () {
         game.physics.arcade.collide(this.bomberman.sprite, this.map.mapLayers.collide);
         game.physics.arcade.collide(this.bomberman.sprite, this.boxs);
+        
+        game.physics.arcade.overlap(this.bomberman.sprite, this.portals, this.endGame);
         game.physics.arcade.overlap(this.bomberman.sprite, this.creeps, this.collideBombermanCreeps);
         game.physics.arcade.collide(this.creeps, this.map.mapLayers.collide, this.hitWall);
         game.physics.arcade.collide(this.creeps, this.boxs, this.hitWall);
@@ -167,21 +198,17 @@ PlayState.prototype = {
             }
         }
     },
-    colideBoxFlame: function (a, b) {/*
+    colideBoxFlame: function (a, b) {
         if (a.objectBox.alive) {
             a.animations.stop();
-            a.body.immovable = true;
-            a.body.velocity.setTo(0);
-            console.log('x')
-            a.objectCreep.alive = false;
+            a.objectBox.alive = false;
             var tween = game.add.tween(a).to({
                 alpha: 0
-            }, 2000, Phaser.Easing.Linear.None, true);
+            }, 1000, Phaser.Easing.Linear.None, true);
             tween.onComplete.add(function () {
                 a.kill();
             }, this);
-        }*/
-        a.kill();
+        }
     },
     collideBombermanCreeps: function (a, b) {
         console.log(a);
@@ -204,7 +231,7 @@ PlayState.prototype = {
     },
     render: function () {
         // if (this.bomb) {
-        //     this.bomb.flameGroup.forEachAlive(function (member) {
+        //    this.flameG.forEachAlive(function (member) {
         //         game.debug.body(member);
         //     }, this);
         // }

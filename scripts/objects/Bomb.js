@@ -73,8 +73,18 @@ Bomb.prototype.destroyBomb = function () {
     this.sprite.kill();
     this.alive = false;
     game.time.events.add(Phaser.Timer.SECOND * 2, function () {
+        var tween;
+        var tween2;
         game.state.states.Play.flameG.forEach(function (item) {
-            item.kill();
+         
+             tween = game.add.tween(item.scale).to(  {x: 0.5,y: 0.5  } , 1500, Phaser.Easing.Back.Out, true);
+             tween2 = game.add.tween(item.anchor).to(  {x: -0.5  ,y: -0.5  } , 1500, Phaser.Easing.Back.Out, true);
+            //item.kill();
         }, this, true);
+        tween.onComplete.add(function () {
+            game.state.states.Play.flameG.forEach(function (item) {
+                item.kill();
+            }, this, true);
+        }, this);
     }, this);
 }
