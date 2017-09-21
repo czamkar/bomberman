@@ -213,6 +213,8 @@ PlayState.prototype = {
     collideBombermanCreeps: function (a, b) {
         console.log(a);
         if (a.objectBomberman.alive) {
+            var music = game.add.audio('kill');
+            music.play();
             a.body.immovable = true;
             a.body.velocity.setTo(0);
             console.log('x')
