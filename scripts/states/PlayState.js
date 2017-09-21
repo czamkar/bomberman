@@ -28,27 +28,33 @@ PlayState.prototype = {
         game.load.tilemap('map', 'assets/Map/map.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('tiles', 'assets/Map/tileMapBO.png');
     },
+    createPortal: function (x, y) {
+        this.portal = game.add.sprite(x * 64, y * 64, 'blocks', 'Portal');
+        console.log(x, y);
+        game.physics.arcade.enable(this.portal);
+        this.portal.anchor.setTo(0.5);
+        this.portal.x += this.portal.width*0.5;
+        this.portal.y += this.portal.height* 0.5;
+        this.portals.add(this.portal);
+
+        game.add.tween(this.portal).to({
+            angle: 360
+        }, 2000, Phaser.Easing.Linear.None, true, 1, -1);
+    },
     create: function () {
         this.map = new Map(game);
         this.creeps = game.add.group();
         this.portals = game.add.group();
         var x = game.rnd.integerInRange(6, 15);
         var y = game.rnd.integerInRange(6, 15);
-        
+
         if (x % 2 !== 0) {
-   
-                this.portal = game.add.sprite(x*64, y*64, 'blocks', 'Portal');
-                console.log(x,y);
-                game.physics.arcade.enable(this.portal); 
-                this.portals.add( this.portal);
-            
+
+            this.createPortal(x,y);
+
         } else if (y % 2 !== 0) {
 
-                this.portal = game.add.sprite(x*64, y*64, 'blocks', 'Portal');
-                console.log(x,y);
-                game.physics.arcade.enable(this.portal); 
-                this.portals.add( this.portal);
-            
+            this.createPortal(x,y);
         }
         this.boxs = game.add.group();
         var amount = 0;
@@ -149,12 +155,17 @@ PlayState.prototype = {
         }
 
     },
-    endGame: function(){
-        
-        var style = { font: "bold 96px Arial", fill: "#ffffff", boundsAlignH: "center", boundsAlignV: "middle" };
-    
+    endGame: function () {
+
+        var style = {
+            font: "bold 96px Arial",
+            fill: "#ffffff",
+            boundsAlignH: "center",
+            boundsAlignV: "middle"
+        };
+
         //  The Text is positioned at 0, 100
-        this.text = game.add.text(game.width/2, game.height/2, "Win !", style);
+        this.text = game.add.text(game.width / 2, game.height / 2, "Win !", style);
         this.text.anchor.setTo(0.5);
         this.text.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
         this.text.fixedToCamera = true;
@@ -162,7 +173,7 @@ PlayState.prototype = {
     update: function () {
         game.physics.arcade.collide(this.bomberman.sprite, this.map.mapLayers.collide);
         game.physics.arcade.collide(this.bomberman.sprite, this.boxs);
-        
+
         game.physics.arcade.overlap(this.bomberman.sprite, this.portals, this.endGame);
         game.physics.arcade.overlap(this.bomberman.sprite, this.creeps, this.collideBombermanCreeps);
         game.physics.arcade.collide(this.creeps, this.map.mapLayers.collide, this.hitWall);
@@ -196,7 +207,7 @@ PlayState.prototype = {
                 this.currentTileY = this.map.mapLayers['grass'].getTileY(this.bomberman.sprite.body.y);
                 var tile = this.map.map.getTile(this.currentTileX, this.currentTileY);
                 this.bomb = new Bomb(tile.worldX + 10, tile.worldY + 10, game, this.map);
-                
+
                 this.bombGroup.add(this.bomb.sprite);
             }
         }
@@ -241,7 +252,7 @@ PlayState.prototype = {
         // game.debug.text('Body X ' + this.creeps[0].body.velocity.x, 32, 88);
         // game.debug.text('Body Y ' + this.creeps[0].body.velocity.y, 32, 108);
 
- 
+
         // this.currentTile = map.getTile(mapLayers['collide'].getTileX(this.bomberman.sprite.body.x), mapLayers['collide'].getTileX(this.bomberman.sprite.body.y), 'collide');
         // console.log( this.currentTile);
 

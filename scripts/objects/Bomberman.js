@@ -21,11 +21,15 @@ Bomberman.prototype.control = function () {
     this.sprite.body.velocity.x = 0;
     this.sprite.body.velocity.y = 0;
     //this.sprite.animations.stop();
-    if (this.alive) {
-        if (this.cursors.left.isDown) {
+    var music = game.add.audio('walk');
 
+    if (this.alive) {
+        
+        if (this.cursors.left.isDown) {
             this.sprite.body.velocity.x = -150;
+          
             if (this.facing != 'left') {
+            
                 this.sprite.scale.x = -1;
                 this.sprite.animations.play('left');
 
