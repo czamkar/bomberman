@@ -6,7 +6,7 @@ var Bomb = function (x, y, game, map) {
     this.objectBomb = this;
     this.sprite.animations.add('explode', Phaser.Animation.generateFrameNames('Bomb_f', 0, 2, '', 2), 1, true);
     this.sprite.animations.play('explode');
-    game.physics.arcade.enable(this.sprite);    
+    game.physics.arcade.enable(this.sprite);
     this.sprite.body.immovable = true;
     game.time.events.add(Phaser.Timer.SECOND * 3, this.destroyBomb, this);
 }
@@ -68,19 +68,30 @@ Bomb.prototype.destroyBomb = function () {
         game.state.states.Play.flameG.add(flame);
     }
 
-    game.physics.arcade.enable( game.state.states.Play.flameG);
+    game.physics.arcade.enable(game.state.states.Play.flameG);
 
     this.sprite.kill();
     this.alive = false;
-    game.time.events.add(Phaser.Timer.SECOND * 1, function () {
+    game.time.events.add(Phaser.Timer.SECOND * 2, function () {
         var tween;
-        var tween2;
         game.state.states.Play.flameG.forEach(function (item) {
-         
-             tween = game.add.tween(item.scale).to(  {x: 0.5,y: 0.5  } , 1000, Phaser.Easing.Back.Out, true);
-             tween2 = game.add.tween(item.anchor).to(  {x: -0.5  ,y: -0.5  } , 1000, Phaser.Easing.Back.Out, true);
-            //item.kill();
+            item.anchor.y = 1;
+            item.anchor.x = 0.5;
+            tween = game.add.tween(item.scale).to({
+                x: 0,
+                y: 0
+            }, 1000, Phaser.Easing.Back.Out, true);
+            item.x += item.width*0.5;
+            item.y += item.height;
         }, this, true);
+        tween.onStart.add(function (item) {
+                console.log(game.state.states.Play.flameG[0]);/*
+                console.log(game.state.states.Play.flameG[0]);
+                item.x -= item.width * 0.5;
+                item.y -= item.height;
+                console.log(game.state.states.Play.flameG[0]);*/
+      
+        }, this);
         tween.onComplete.add(function () {
             game.state.states.Play.flameG.forEach(function (item) {
                 item.kill();

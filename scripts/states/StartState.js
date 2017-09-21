@@ -20,8 +20,8 @@ StartState.prototype = {
         button = game.add.button(game.world.centerX , 300, 'button', this.actionOnClick, this, 1, 2, 0);
         button.anchor.x = 0.5;
 
-        music = game.add.audio('music');
-        music.play();
+        // music = game.add.audio('music');
+        // music.play();
     },
     actionOnClick: function  () {
         
