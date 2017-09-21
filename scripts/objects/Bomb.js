@@ -17,8 +17,8 @@ Bomb.prototype.createFlame = function (x, y) {
     var flame = game.add.sprite(x, y, 'flame', 'Flame_f00');
     flame.anchor.y = 1;
     flame.anchor.x = 0.5;
-    flame.x += flame.width * 0.5;
-    flame.y += flame.height;
+    flame.x += flame.width * 0.7;
+    flame.y += flame.height*1.1;
     flame.animations.add('flame', Phaser.Animation.generateFrameNames('Flame_f', 0, 4, '', 2), 4, true);
     flame.animations.play('flame');
 
