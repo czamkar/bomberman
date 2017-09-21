@@ -9,6 +9,7 @@ StartState.prototype = {
         game.load.spritesheet('button', 'assets/Menu/button_spritesheet.png', 132, 27);
         game.load.audio('placeBomb', 'assets/Sound/placeBomb.wav');
         game.load.audio('kill', 'assets/Sound/kill.wav');
+        game.load.audio('bom', 'assets/Sound/BOM_11_M.wav');
         
     },
     create: function () {

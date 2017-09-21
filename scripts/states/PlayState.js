@@ -180,7 +180,8 @@ PlayState.prototype = {
             game.physics.arcade.overlap(this.creeps, this.flameG, this.collideCreepFlame);
 
             if (this.bombButton.isDown && this.bomb.objectBomb.alive !== true) {
-
+                var music = game.add.audio('placeBomb');
+                music.play();
                 this.currentTileX = this.map.mapLayers['grass'].getTileX(this.bomberman.sprite.body.x);
                 this.currentTileY = this.map.mapLayers['grass'].getTileY(this.bomberman.sprite.body.y);
                 var tile = this.map.map.getTile(this.currentTileX, this.currentTileY);
@@ -189,11 +190,13 @@ PlayState.prototype = {
             }
         } else {
             if (this.bombButton.isDown) {
-
+                var music = game.add.audio('placeBomb');
+                music.play();
                 this.currentTileX = this.map.mapLayers['grass'].getTileX(this.bomberman.sprite.body.x);
                 this.currentTileY = this.map.mapLayers['grass'].getTileY(this.bomberman.sprite.body.y);
                 var tile = this.map.map.getTile(this.currentTileX, this.currentTileY);
                 this.bomb = new Bomb(tile.worldX + 10, tile.worldY + 10, game, this.map);
+                
                 this.bombGroup.add(this.bomb.sprite);
             }
         }
@@ -211,13 +214,11 @@ PlayState.prototype = {
         }
     },
     collideBombermanCreeps: function (a, b) {
-        console.log(a);
         if (a.objectBomberman.alive) {
             var music = game.add.audio('kill');
             music.play();
             a.body.immovable = true;
             a.body.velocity.setTo(0);
-            console.log('x')
             a.objectBomberman.alive = false;
             var tween = game.add.tween(a).to({
                 alpha: 0

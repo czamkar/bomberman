@@ -53,7 +53,8 @@ Bomb.prototype.destroyBomb = function () {
     }
 
     game.physics.arcade.enable(game.state.states.Play.flameG);
-
+    var music = game.add.audio('bom');
+    music.play();
     this.sprite.kill();
     this.alive = false;
     game.time.events.add(Phaser.Timer.SECOND * 2, function () {
