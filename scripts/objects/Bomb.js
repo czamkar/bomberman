@@ -62,8 +62,8 @@ Bomb.prototype.destroyBomb = function () {
         game.state.states.Play.flameG.forEach(function (item) {
 
             tween = game.add.tween(item.scale).to({
-                x: 0,
-                y: 0
+                x: 0.2,
+                y: 0.2
             }, 1000, Phaser.Easing.Back.Out, true);
 
         }, this, true);

@@ -43,7 +43,6 @@ PlayState.prototype = {
     },
     create: function () {
         this.map = new Map(game);
-        this.creeps = game.add.group();
         this.portals = game.add.group();
         var x = game.rnd.integerInRange(6, 15);
         var y = game.rnd.integerInRange(6, 15);
@@ -56,6 +55,8 @@ PlayState.prototype = {
 
             this.createPortal(x,y);
         }
+        
+        this.creeps = game.add.group();
         this.boxs = game.add.group();
         var amount = 0;
         var box;
@@ -163,8 +164,7 @@ PlayState.prototype = {
             boundsAlignH: "center",
             boundsAlignV: "middle"
         };
-
-        //  The Text is positioned at 0, 100
+        
         this.text = game.add.text(game.width / 2, game.height / 2, "Win !", style);
         this.text.anchor.setTo(0.5);
         this.text.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
@@ -239,9 +239,6 @@ PlayState.prototype = {
                 game.paused = true;
             }, this);
         }
-    },
-    kill: function () {
-        game.paused = true;
     },
     render: function () {
         // if (this.bomb) {
